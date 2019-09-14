@@ -8,25 +8,30 @@ echo "    // SteweMetal's Jellyfin Media Center Config Script //"
 echo "    //////////////////////////////////////////////////////"
 echo
 echo 
-echo "First, I'll set up the Media Center file system!"
+echo "Let's set up the Media Center file system!"
 echo 
 echo "Would you like to install one of the following file system drivers?"
 echo
 echo "[1] exFAT"
 echo "[2] NTFS"
 echo "[3] Both"
-echo "[4] Neither"
 echo
 read -p "Pick an option! " fs_driver_option
 case $fs_driver_option in
-	[1]* ) sudo apt-get install exfat-fuse;;
-	[2]* ) sudo apt-get install ntfs-3g;;
-	[3]* ) sudo apt-get install exfat-fuse; sudo apt-get install ntfs-3g;;
+	1) 
+		sudo apt-get install exfat-fuse ;;
+	2) 	
+		sudo apt-get install ntfs-3g ;;
+	3) 
+		sudo apt-get install exfat-fuse
+		sudo apt-get install ntfs-3g ;;
+	*)
+		echo "Skipping file system driver installation!"
 esac
 echo
 echo "Here are the attached drives:"
 echo
-sudo lsblk -o UUID,NAME,LABEL,sIZE,FSTYPE,MODEL,MOUNTPOINT
+sudo lsblk -o UUID,NAME,LABEL,SIZE,FSTYPE,MODEL,MOUNTPOINT
 echo
 echo "Choose a drive to mount as the media center storage!"
 echo "    (I will umnmount and remount the drive!)"
@@ -51,12 +56,11 @@ fi
 echo
 echo "Do you want me to create media library folders?"
 read -p "List library names separated by semicolons: " lib_names
+echo
 if [ -z "$lib_names" ]
 then
-	echo
 	echo "No library names were specified, skipping library creation!"
 else
-	echo
 	IFS=";" read -ra LIBS <<< "$lib_names"
 	for i in "${LIBS[@]}"; do
 		sudo mkdir "${MEDIACENTER_ROOT}/${i}"
@@ -71,9 +75,9 @@ echo "[1] Install"
 echo "[2] Skip"
 echo
 read -p "Pick an option! " jellyfin_install_option
+echo
 case $jellyfin_install_option in
 	1) 
-		echo
 		echo "Installing apt-transport-https..."
 		echo
 		sudo apt install apt-transport-https
@@ -95,7 +99,6 @@ case $jellyfin_install_option in
 		echo
 		echo "Jellyfin was installed successfully!";;
 	*) 
-		echo
 		echo "Skipping Jellyfin installation!";;
 esac
 echo
@@ -111,4 +114,4 @@ echo
 echo "Have fun!"
 echo
 echo "For further information, visit https://jellyfin.readthedocs.io/en/latest/ !"
-read
+echo
