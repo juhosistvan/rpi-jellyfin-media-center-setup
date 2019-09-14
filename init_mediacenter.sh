@@ -49,9 +49,23 @@ else
 	echo
 	echo "Mounting drive to ${MEDIACENTER_ROOT}..."
 	echo
-	sudo mkdir /mnt/mediacenter
+	sudo mkdir $MEDIACENTER_ROOT
+	sudo chmod 775 $MEDIACENTER_ROOT
 	sudo mount UUID=$uuid /mnt/mediacenter
 	echo "Drive was mounted to ${MEDIACENTER_ROOT}!"
+	echo
+	echo "Setting up auto-mount on boot..."
+	echo
+	sudo chmod 644 /etc/fstab
+	sudo cp /etc/fstab /etc/fstab.backup
+	sudo chmod 777 /etc/fstab
+	DEVICE=$(sudo blkid | grep $uuid | cut -d: -f1)
+	TYPE=$(sudo blkid | grep 2A147679147647B9 | sed -n "s/^.*TYPE=\"\(.*\)\"\s.*$/\1/p")
+	FSTAB_NEW_ENTRY="${DEVICE} ${MEDIACENTER_ROOT} ${TYPE} defaults 0 0"
+	sudo grep -qxF "${FSTAB_NEW_ENTRY}" /etc/fstab || echo $FSTAB_NEW_ENTRY >> /etc/fstab
+	sudo chmod 644 /etc/fstab
+	echo "Auto-mount setup was successful!"
+	
 fi
 echo
 echo "Do you want me to create media library folders?"
