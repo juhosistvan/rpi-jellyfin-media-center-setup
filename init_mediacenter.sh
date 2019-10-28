@@ -59,7 +59,7 @@ else
 	sudo chmod 644 /etc/fstab
 	sudo cp /etc/fstab /etc/fstab.backup
 	sudo chmod 777 /etc/fstab
-	DEVICE=$(sudo blkid | grep $uuid | cut -d: -f1)
+	DEVICE="UUID=$uuid"
 	TYPE=$(sudo blkid | grep 2A147679147647B9 | sed -n "s/^.*TYPE=\"\(.*\)\"\s.*$/\1/p")
 	FSTAB_NEW_ENTRY="${DEVICE} ${MEDIACENTER_ROOT} ${TYPE} defaults 0 0"
 	sudo grep -qxF "${FSTAB_NEW_ENTRY}" /etc/fstab || echo $FSTAB_NEW_ENTRY >> /etc/fstab
